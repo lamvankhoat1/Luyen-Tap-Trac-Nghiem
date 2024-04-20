@@ -1,0 +1,56 @@
+body {
+    font-size: 1.2rem
+}
+
+#examination {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.question-content {
+    font-weight: bold;
+    font-size: 1.3rem;
+    margin: 5px 0;
+}
+
+.choice-option label {
+    display: block;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.choice-option label:hover {
+    background-color: #e7e7e7
+}
+
+input[type="radio"] {
+    margin-right: 10px
+}
+
+div.key-explain {
+    display: none;
+}
+
+.action button, .renew {
+    display: block;
+    width: 100%;
+    border: none;
+    outline: none;
+    transition: all 0.1s;
+    border: 1px solid #cdcdcd
+}
+
+.action button:hover {
+    background-color: #e3e3e3;
+    color: #242424;
+    border: 1px solid #8e8e8e
+}
+
+.renew {
+    margin-top: 20px;
+}
+
+.choice-option {
+    display: flex;
+    flex-direction: column;
+}

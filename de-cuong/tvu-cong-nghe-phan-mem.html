@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lập trình thiết bị di động</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/exam.css">
+</head>
+
+<body>
+    <!-- DATA -->
+    <div id="examination">
+        <div id="subject-name">Công nghệ phần mềm</div>
+    </div>
+
+
+    <!-- SCRIPT -->
+    <script>
+
+        let path = "../txt-folder/cong-nghe-phan-mem.txt";
+        let text_replace = "I - TVU::Công nghệ phần mềm::";
+
+        fetch(path)
+            .then((response) => response.text())
+            .then((text) => {
+                let lines_list = splitLineByLine(text);
+
+                remove3FisrtLines(lines_list);
+                removeLastLine(lines_list)
+
+                lines_list.forEach(function (line, line_index) {
+                    lines_list[line_index] = splitFieldInLine(line);
+                })
+
+                view_html(lines_list);
+            })
+
+        function remove3FisrtLines(lines_list) {
+            lines_list.shift();
+            lines_list.shift();
+            lines_list.shift();
+        }
+
+        function removeLastLine(lines_list) {
+            lines_list.pop();
+        }
+
+        function splitLineByLine(text) {
+            return text.split("\n");
+        }
+
+        function splitFieldInLine(Line_string) {
+            return Line_string.split("\t");
+        }
+
+        // VIEW
+        function pushToExaminationId(htmlFormat) {
+            let examination_id = document.getElementById("examination");
+            examination_id.innerHTML += htmlFormat;
+        }
+
+        function pushToQuestionClass(htmlFormat) {
+            let question_class = document.getElementById("examination").getElementsByClassName("question");
+            question_class = Array.from(question_class);
+            question_class = question_class[question_class.length - 1];
+            question_class.innerHTML += htmlFormat;
+        }
+
+        function formatParagraph(string) {
+            string = string.replace(/^\"/gm, "");
+            string = string.replace(/\"$/gm, "");
+            return string;
+        }
+
+        function view_html(lines_list) {
+            lines_list.forEach(function (line, index) {
+                console.log(line)
+                view_decks(line);
+
+                view_questions(line);
+                view_A_option(line);
+                view_B_option(line);
+                view_C_option(line);
+                view_D_option(line);
+                // view_key(line);
+                view_explain(line);
+            })
+        }
+
+        function view_decks(line) {
+            let newDecksName = line[0];
+            // check decks-name cuối cùng nếu khác decks-name mới thì pushToExaminationId
+            let lastDecksName = document.querySelectorAll(".decks-name")[document.querySelectorAll(".decks-name").length - 1];
+            lastDecksName = (lastDecksName) ? lastDecksName.innerHTML : "";
+
+            let isNewDecksName = (lastDecksName.replace(text_replace, "") != newDecksName.replace(text_replace, ""));
+            if (isNewDecksName) {
+                pushToExaminationId(`<div class='decks-name'>${newDecksName.replace(text_replace, "")}</div>`);
+            }
+        }
+
+
+        function view_questions(line) {
+            let question_string = formatParagraph(line[1]);
+            question_string = question_string.replace("[0] ", "").replace("[1] ", "").replace("[2] ", "").replace("[3] ", "");
+            pushToExaminationId(`<div class='question'><h3>${question_string}</h3></div>`);
+            // format last element
+        }
+
+        function view_A_option(line) {
+            let option = line[2]
+            pushToQuestionClass(`<div class="option">A. ${option}</div>`);
+        };
+        function view_B_option(line) {
+            let option = line[3]
+            pushToQuestionClass(`<div class="option">B. ${option}</div>`);
+        };
+        function view_C_option(line) {
+            let option = line[4]
+            pushToQuestionClass(`<div class="option">C. ${option}</div>`);
+        };
+        function view_D_option(line) {
+            let option = line[5]
+            pushToQuestionClass(`<div class="option">D. ${option}</div>`);
+        };
+
+        function view_key(line) {
+            let key_string = line[6];
+            pushToQuestionClass(`<div class="key"><b>Đáp án:</b> ${key_string}</div>`);
+        }
+
+        function view_explain(line) {
+            let expain_string = formatParagraph(line[7]);
+            pushToQuestionClass(`<div class="explain"><b>Giải thích:</b> ${expain_string}</div>`);
+        };
+
+
+    </script>
+</body>
+
+</html>

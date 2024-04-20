@@ -1,0 +1,49 @@
+.d-flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.decks-name {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 50px;
+    counter-reset: number-question;
+}
+
+.question {
+    border: 1px solid #180b0b;
+    border-radius: 5px;
+    padding: 5px 20px;
+    margin-top: 5px;
+}
+
+.question .option:nth-child(5) {
+    padding-bottom: 20px;
+}
+
+.question h3::before {
+    counter-increment: number-question;
+    content: "Câu " counter(number-question) ": ";
+    text-decoration: underline;
+    float: left;
+    margin-right: 10px;
+}
+
+.key, .explain {
+    border-top: 1px solid #575757;
+    padding-top: 25px;
+}
+
+div#subject-name {
+    font-style: italic;
+    font-size: small;
+    color: #878787;
+}
+
+label::after {
+    display: block;
+    content: "";
+}
+
