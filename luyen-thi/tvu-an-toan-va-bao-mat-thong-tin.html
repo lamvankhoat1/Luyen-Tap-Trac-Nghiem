@@ -21,6 +21,7 @@
             <div id="content-exam">
                 <!-- renderContentExam(deckName) -->
             </div>
+            <div class="btn-group"></div>
         </div>
     </div>
 
@@ -73,14 +74,34 @@
                 return Math.random() - 0.5;
             })
         }
+
+        function swapListItem(list, stringKey1, stringKey2) {
+            // XÁC ĐỊNH INDEX1 LUYỆN TẬP TRẮC NGHIỆM 2
+            // XÁC ĐỊNH INDEX2 BÀI TẬP GIỮA KỲ 1
+            // CHÈN INDEX2 SAU INDEX 1
+            // XOÁ INDEX2
+            let index1 = list.findIndex(function searchIndex(item) {
+                return item.includes(stringKey1);
+            })
+            let index2 = list.findIndex(function searchIndex(item) {
+                return item.includes(stringKey2);
+            })
+            list.splice(index1 + 1, 0, list[index2])
+            list.splice(index2, 1)
+        }
         function renderDeckList(data) {
             let list = data.map(item => item.deckName);
             list = [...new Set(list)];
             list.sort(); //sắp xếp theo thứ tự chữ cái
+            swapListItem(list, "trắc nghiệm 2", "giữa kỳ số 1")
+            swapListItem(list, "trắc nghiệm 3", "giữa kỳ số 2")
+
             $("#deck-list").append(`<option values='' disabled selected>Chọn nội dung</option>`)
             for (let deckName of list) {
-                $("#deck-list").append(`<option value='${deckName}'>${deckName.replace('I - TVU::An toàn và bảo mật thông tin::', '')}</option>`);
+                $("#deck-list").append(`<option value='${deckName}'>${deckName.replace(text_replace, '')}</option>`);
             }
+
+            saveDeckList(JSON.stringify(list));
         }
 
         function renderQuestion(item) {
@@ -105,6 +126,8 @@
         }
 
         function renderContentExam(deckName) {
+            // save current Deck
+            saveCurrentDeck(deckName)
             let data_filter = getData().filter(item => item.deckName == deckName);
             $("#content-exam").html(""); // reset content
             for (const item of data_filter) {
@@ -112,11 +135,9 @@
             }
 
             $(".key-explain button.redo").click(redo);
-            $("#content-exam").prepend(`<h1>${getCurrentDeck().replace('I - TVU::An toàn và bảo mật thông tin::', "")}</h1>`);
+            $("#content-exam").prepend(`<h1>${getCurrentDeck().replace(text_replace, "")}</h1>`);
             removeEmptyTag()
             removeQuotes()
-
-            //  addEvent button: làm lại câu hỏi
 
             // addEvent View Key And Explain
             $("input[type='radio']").click(function () {
@@ -138,19 +159,28 @@
                             behavior: "smooth",
                             block: "center"
                         })
-
-                        // thêm nút làm lại
-                        $("#content-exam").append("<button class='renew' onclick='scrollToTop()'>Làm lại phần này</button>")
-
                     }
-                }, 200)
+                }, 100)
+
             })
 
         }
 
         function scrollToTop() {
             renderContentExam(getCurrentDeck())
-            $("html, body").animate({ scrollTop: 0 }, 2000); // lên đầu trang
+            $("html, body").animate({ scrollTop: 0 }, 1000); // lên đầu trang
+        }
+
+        function doNextDeck() {
+            let currentDeck = getCurrentDeck();
+            let deckList = JSON.parse(localStorage.getItem("deckList"))
+            let nextDeck_index = deckList.indexOf(currentDeck) + 1;
+            if (deckList[nextDeck_index]) {
+                renderContentExam(deckList[nextDeck_index]);
+            } else {
+                renderContentExam(deckList[0]);
+            }
+            scrollToTop();
         }
 
         function redo() {
@@ -175,6 +205,7 @@
                 let keyExplainElm = input.closest(".wp-question").find(".key-explain");
                 console.log(keyExplainElm)
                 keyExplainElm.slideDown(100);
+                keyExplainElm.find("button.redo").click(redo);
 
                 setTimeout(function scrollNextToQuestion() {
                     // scroll next
@@ -190,8 +221,6 @@
                             behavior: "smooth",
                             block: "center"
                         })
-                        // thêm nút làm lại
-                        $("#content-exam").append("<button class='renew' onclick='scrollToTop()'>Làm lại phần này</button>")
                     }
                 }, 200)
             })
@@ -201,6 +230,10 @@
 
         function saveCurrentDeck(deckName) {
             localStorage.setItem('currentDeck', deckName);
+        }
+
+        function saveDeckList(deckList) {
+            localStorage.setItem('deckList', deckList);
         }
 
         renderContentExam(getCurrentDeck());
@@ -238,6 +271,9 @@
                 }
             })
         }
+
+        // thêm nút làm lại & làm tiếp ở cuối trang
+        $(".btn-group").append("<button class='renew' onclick='scrollToTop()'>Làm lại</button><button class='new' onclick='doNextDeck()'>Làm tiếp</button>")
     </script>
 </body>
 

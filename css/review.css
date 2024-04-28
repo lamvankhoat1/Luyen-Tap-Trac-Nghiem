@@ -31,7 +31,11 @@ div.key-explain {
     display: none;
 }
 
-.action button, .renew {
+.btn-group {
+    display: flex;
+}
+
+.action button, .renew, .new {
     display: block;
     width: 100%;
     border: none;
@@ -46,8 +50,8 @@ div.key-explain {
     border: 1px solid #8e8e8e
 }
 
-.renew {
-    margin-top: 20px;
+.renew, .new {
+    /* margin: 5px 10px; */
 }
 
 .choice-option {
