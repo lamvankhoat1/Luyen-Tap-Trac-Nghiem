@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện thi</title>
+</head>
+
+<body>
+    <style>
+        div#list-exam {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        div#list-exam a {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 15px;
+            padding: 10px 5px;
+            margin-bottom: 10px;
+            text-decoration: none;
+        }
+
+        iframe {
+            display: block;
+        }
+
+        iframe {
+            width: 100%;
+            position: relative;
+            left: 0;
+            outline: none;
+            border: none;
+            height: 90vh;
+        }
+    </style>
+    <div id="list-exam">
+        <a href="cong-nghe-phan-mem.html" target="view_exam">Công nghệ phần mếm</a>
+        <a href="lap-trinh-thiet-bi-di-dong.html" target="view_exam">Lập trình thiết bị di động</a>
+        <a href="an-toan-va-bao-mat-thong-tin.html" target="view_exam">An toàn và bảo mật thông tin</a>
+        <iframe name="view_exam" src="cong-nghe-phan-mem.html">
+    </div>
+</body>
+
+</html>
