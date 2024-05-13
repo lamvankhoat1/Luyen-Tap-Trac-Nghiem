@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luyện thi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -38,11 +39,32 @@
         }
     </style>
     <div id="list-exam">
-        <a href="cong-nghe-phan-mem.html" target="view_exam">Công nghệ phần mếm</a>
-        <a href="lap-trinh-thiet-bi-di-dong.html" target="view_exam">Lập trình thiết bị di động</a>
-        <a href="an-toan-va-bao-mat-thong-tin.html" target="view_exam">An toàn và bảo mật thông tin</a>
-        <iframe name="view_exam" src="cong-nghe-phan-mem.html">
+        <button data-path="cong-nghe-phan-mem.html">Công nghệ phần mếm</button>
+        <button data-path="lap-trinh-thiet-bi-di-dong.html">Lập trình thiết bị di động</button>
+        <button data-path="an-toan-va-bao-mat-thong-tin.html">An toàn và bảo mật thông tin</button>
+        <!-- <iframe name="view_exam" src=""> -->
     </div>
+    <div id="result"></div>
+
+    <script>
+        let path = localStorage.getItem("path-exam");
+        if (path) {
+            view_result(path);
+        }
+        $(document).ready(function () {
+            $("button").click(function () {
+                let path = $(this).get(0).dataset.path;
+                localStorage.setItem("path-exam", path);
+                view_result(path);
+            })
+        })
+
+        function view_result(path) {
+            $("#result").html("");
+            $("#result").append(`<iframe name="view_exam" src="${path}">`)
+        }
+    </script>
+
 </body>
 
 </html>
