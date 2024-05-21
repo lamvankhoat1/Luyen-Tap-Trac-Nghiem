@@ -1,0 +1,49 @@
+body {
+    background-color: rgb(81, 91, 145);
+    display: flex;
+    align-items: center;
+    height: 100vh;
+}
+
+form#form-login {
+    background-color: #fff;
+    flex-basis: 330px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 8px 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+input[name='btn_login'] {
+    background: #515b91;
+    color: white;
+    outline: none;
+    border: navajowhite;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    display: inline;
+    width: unset;
+}
+
+#lost-pass {
+    text-decoration: underline;
+}
+
+p.error {
+    text-align: left;
+    font-style: italic;
+    margin-top: -10px;
+    font-size: 13px;
+    color: red;
+}
