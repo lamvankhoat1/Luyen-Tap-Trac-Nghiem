@@ -72,6 +72,7 @@ function renderDeckList(data) {
 }
 
 function renderQuestion(item) {
+    console.log(item);
     let abcd = [0, 1, 2, 3];
     abcd.sort(function (a, b) { return 0.5 - Math.random() });
     return `
