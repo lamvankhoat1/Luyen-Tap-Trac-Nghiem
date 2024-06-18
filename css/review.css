@@ -3,8 +3,8 @@ body {
 }
 
 #examination {
-    max-width: 500px;
     margin: 0 auto;
+    width: 600px;
 }
 
 .question-content {
