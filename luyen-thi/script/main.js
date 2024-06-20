@@ -1,3 +1,4 @@
+
 var data = []
 fetch(path)
     .then((response) => response.text())
@@ -22,7 +23,6 @@ fetch(path)
         }
         // random câu hỏi
         randomData(data);
-        // console.log(data.map(item => item.id)); // check random
         saveData(data);
         renderDeckList(data);
     })
@@ -103,7 +103,7 @@ function renderContentExam(deckName) {
     }
 
     $(".key-explain button.redo").click(redo);
-    $("#content-exam").prepend(`<h1>${getCurrentDeck().replace(text_replace, "")}</h1>`);
+    $("#content-exam").prepend(`<h1>${getCurrentDeck().replace(text_replace, "").replace(/I\s\-\sTVU\:\:[[s\S].*\:\:/gm, "")}</h1>`);
     removeEmptyTag()
     removeQuotes()
 
@@ -205,7 +205,6 @@ function saveDeckList(deckList) {
 }
 
 renderContentExam(getCurrentDeck());
-console.log(`getCurrentDeck()`, getCurrentDeck());
 function getCurrentDeck() {
     let current =  (localStorage.getItem("currentDeck") == null) ? data[0].deckName : localStorage.getItem("currentDeck");
     if (!current.includes(text_replace)) {
