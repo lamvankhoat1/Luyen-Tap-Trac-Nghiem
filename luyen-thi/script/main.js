@@ -74,6 +74,7 @@ function renderDeckList(data) {
 }
 
 function renderQuestion(item) {
+    console.log(item);
     let abcd = [0, 1, 2, 3];
     abcd.sort(function (a, b) { return 0.5 - Math.random() });
     return `
@@ -86,8 +87,8 @@ function renderQuestion(item) {
                 <label style="order: ${abcd[3]}"><input type="radio" name="q-${item.id}">${item.d}</label>
             </div>
             <div class="key-explain">
-                <mark>${item.key}</mark>   
-                <p class="explain">${item.explain}</p>
+                <mark>${item.key}</mark>
+                <p>${item.explain}</p>
                 <div class="action" ><button class="redo" data-index="${item.id}">Làm lại câu này</button></div>
             </div>
         </div>
@@ -106,7 +107,6 @@ function renderContentExam(deckName) {
     $(".key-explain button.redo").click(redo);
     $("#content-exam").prepend(`<h1>${getCurrentDeck().replace(text_replace, "").replace(/I\s\-\sTVU\:\:[[s\S].*\:\:/gm, "")}</h1>`);
     removeEmptyTag()
-    removeQuotes()
 
     // addEvent View Key And Explain
     $("input[type='radio']").click(function () {
@@ -162,7 +162,6 @@ function redo() {
       LÀM LẠI CÂU HỎI KHI NHẤN VÀO NÚT LÀM LẠI
       - Clone Node
       - Xoá node hiện tại
-      - Append lại vô content-exam, uncheck, slideUp
     */
     let currentQuestion = $(this).closest(".wp-question");
     $("#content-exam").append(currentQuestion.clone())
@@ -238,16 +237,7 @@ function removeEmptyTag() {
     })
     // console.log($(".action").get(0).previousSibling.previousSibling.remove());
 }
-function removeQuotes() {
-    $(".question-content, p.explain").each(function (index, element) {
-        //   console.log(index);
-        //   console.log(element.innerHTML);
 
-        if (element.innerHTML.match(/<[\s\S]*>/)) {
-            element.innerHTML = element.innerHTML.match(/<[\s\S]*>/)[0];
-        }
-    })
-}
 
 // thêm nút làm lại & làm tiếp ở cuối trang
 $(".btn-group").append("<button class='renew' onclick='scrollToTop()'>Làm lại</button><button class='new' onclick='doNextDeck()'>Làm tiếp</button>")
