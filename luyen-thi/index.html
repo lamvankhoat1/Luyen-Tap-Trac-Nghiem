@@ -5,15 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luyện thi</title>
+    <link rel="stylesheet" href="../css/reset.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
     <style>
-        div#list-exam {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+        button#btn-list-exam {
+            width: 100%;
+            border: none;
+            text-transform: uppercase;
+            padding: 10px;
+            font-weight: 500;
+            word-spacing: 10px;
+            letter-spacing: 5px;
+            outline: none;
+
         }
 
         div#list-exam a {
@@ -50,7 +57,8 @@
             margin-left: 10px;
         }
     </style>
-    <div id="list-exam">
+    <button id="btn-list-exam">Danh sách môn</button>
+    <div id="list-exam" style="display: none;">
         <button data-path="do-hoa-ung-dung.html">Đồ hoạ ứng dụng</button>
         <button data-path="phan-tich-va-thiet-ke-he-thong-thong-tin.html">Phân tích và thiết kế hệ thống thông tin</button>
         <button data-path="he-quan-tri-co-so-du-lieu.html">Hệ quản trị cơ sở dữ liệu</button>
@@ -63,11 +71,19 @@
             view_result(path);
         }
         $(document).ready(function () {
-            $("button").click(function () {
+            $("#list-exam button").click(function () {
                 let path = $(this).get(0).dataset.path;
                 localStorage.setItem("path-exam", path);
+                $("#list-exam").slideUp(500);
                 view_result(path);
+
             })
+
+            $("#btn-list-exam").click(function(){
+                $("#list-exam").slideToggle(500);
+            })
+
+            
         })
 
         function view_result(path) {
