@@ -23,6 +23,16 @@
 
         }
 
+        div#count-time {
+            position: fixed;
+            top: 5px;
+            right: 10px;
+            background-color: transparent;
+            padding: 5px;
+            border-radius: 10px;
+            color: unset;
+        }
+
         div#list-exam a {
             display: inline-block;
             margin-right: 10px;
@@ -58,9 +68,11 @@
         }
     </style>
     <button id="btn-list-exam">Danh sách môn</button>
+    <div id="count-time">00:00</div>
     <div id="list-exam" style="display: none;">
         <button data-path="do-hoa-ung-dung.html">Đồ hoạ ứng dụng</button>
-        <button data-path="phan-tich-va-thiet-ke-he-thong-thong-tin.html">Phân tích và thiết kế hệ thống thông tin</button>
+        <button data-path="phan-tich-va-thiet-ke-he-thong-thong-tin.html">Phân tích và thiết kế hệ thống thông
+            tin</button>
         <button data-path="he-quan-tri-co-so-du-lieu.html">Hệ quản trị cơ sở dữ liệu</button>
     </div>
     <div id="result"></div>
@@ -69,6 +81,7 @@
         let path = localStorage.getItem("path-exam");
         if (path) {
             view_result(path);
+            count_time();
         }
         $(document).ready(function () {
             $("#list-exam button").click(function () {
@@ -76,19 +89,37 @@
                 localStorage.setItem("path-exam", path);
                 $("#list-exam").slideUp(500);
                 view_result(path);
-
+                count_time()
             })
 
-            $("#btn-list-exam").click(function(){
+            $("#btn-list-exam").click(function () {
                 $("#list-exam").slideToggle(500);
             })
 
-            
+
         })
 
         function view_result(path) {
             $("#result").html("");
             $("#result").append(`<iframe name="view_exam" src="${path}">`)
+        }
+
+        function count_time() {
+            let interval_count_time
+            if(interval_count_time) {
+                clearInterval(interval_count_time);
+            }
+            let count = 0;
+            interval_count_time = setInterval(function(){
+              count++;
+              $("#count-time").html(mmss(count));
+            }, 1000)
+        }
+
+        function mmss(total_s) {
+            let mm = Math.floor(total_s / 60).toString().padStart(2, '0');
+            let ss = (total_s % 60).toString().padStart(2, '0');
+            return `${mm}:${ss}`
         }
     </script>
 
