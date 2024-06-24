@@ -87,8 +87,7 @@ function renderQuestion(item) {
                 <label style="order: ${abcd[3]}"><input type="radio" name="q-${item.id}">${item.d}</label>
             </div>
             <div class="key-explain">
-                <mark>${item.key}</mark>
-                <p>${item.explain}</p>
+                <mark>${item.key}</mark><p>${item.explain}</p>
                 <div class="action" ><button class="redo" data-index="${item.id}">Làm lại câu này</button></div>
             </div>
         </div>

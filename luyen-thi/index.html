@@ -78,6 +78,7 @@
     <div id="result"></div>
 
     <script>
+        var interval_count_time;
         let path = localStorage.getItem("path-exam");
         if (path) {
             view_result(path);
@@ -105,7 +106,6 @@
         }
 
         function count_time() {
-            let interval_count_time
             if(interval_count_time) {
                 clearInterval(interval_count_time);
             }
