@@ -1,6 +1,4 @@
 
-let count = 1;
-$("#count").html(" - Lần " + count);
 var data = []
 fetch(path)
     .then((response) => response.text())
@@ -25,8 +23,9 @@ fetch(path)
         }
         // random câu hỏi
         randomData(data);
-        saveData(data);
         renderDeckList(data);
+        saveData(data);
+        renderContentExam(getCurrentDeck());
     })
 
 $(document).ready(function () {
@@ -208,13 +207,21 @@ function saveDeckList(deckList) {
     localStorage.setItem('deckList', deckList);
 }
 
-renderContentExam(getCurrentDeck());
+function getDeckList(){
+    return JSON.parse(localStorage.getItem('deckList'));
+}
+
+// renderContentExam(getCurrentDeck());
 function getCurrentDeck() {
+    let deckNameList = getDeckList();
+    console.log(deckNameList);
     let current =  (localStorage.getItem("currentDeck") == null) ? data[0].deckName : localStorage.getItem("currentDeck");
-    if (!current.includes(text_replace)) {
-        return JSON.parse(localStorage.getItem("deckList"))[0];
+    console.log(deckNameList.indexOf(current), deckNameList, current)
+    if(deckNameList.indexOf(current) > -1) {
+        return current;
+    } else {
+        return deckNameList[0];
     }
-    return current;
 }
 
 function saveData(data) {
