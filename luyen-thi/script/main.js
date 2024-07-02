@@ -134,14 +134,11 @@ function renderContentExam(deckName) {
 }
 
 function scrollToTop() {
-    count++;
-    $("#count").html(" - Lần " + count);
     renderContentExam(getCurrentDeck())
     $("html, body").animate({ scrollTop: 0 }, 1000); // lên đầu trang
 }
 
 function doNextDeck() {
-    count = 0; // reset
     let currentDeck = getCurrentDeck();
     let deckList = JSON.parse(localStorage.getItem("deckList"))
     let nextDeck_index = deckList.indexOf(currentDeck) + 1;
