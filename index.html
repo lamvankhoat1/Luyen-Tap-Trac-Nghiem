@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện Thi Online | TVU</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="public/css/reset.css">
+    <link rel="stylesheet" href="public/css/exam.css">
+</head>
+<body>
+    <div id="wrapper">
+    </div>
+    <script>
+        $(document).ready(function(){
+            let folder = "phat-trien-ung-dung-web-voi-ma-nguon-mo/";
+            let files = ['1-luyen-tap-1.tsv'];
+          
+            let data = [];
+            files.forEach(file => {
+                let path = folder + file;
+                fetch(path)
+                    .then(function(response) {
+                        return response.text();
+                    })
+                    .then(function(result) {
+                        create_exam(result);
+                        render_exam(data);
+                    })
+            });
+    
+            function create_exam(text) {
+                let list_questions = text.split("\n");
+                // loại bỏ phần tử cuối nếu rỗng
+                if (list_questions[list_questions.length - 1].length == 0) {
+                    list_questions.pop();
+                }
+                list_questions = list_questions.map(function(item, index, array) {
+                    let components = item.split('\t')
+                    return {
+                        'question': components[0],
+                        'a': components[1],
+                        'b': components[2],
+                        'c': components[3],
+                        'd': components[4],
+                        'key': components[5],
+                        'explain': components[6],
+                    }
+                }) 
+    
+                list_questions.forEach(function(item) {
+                    data.push(item);
+                })
+            }
+            
+            function render_exam(data) {
+                let template = `<div class="question">
+                <div class="content">{{content question}}</div>
+                <label><input type='radio' class="a" name="question-{{id}}">{{a}}</label>
+                <label><input type='radio' class="b" name="question-{{id}}">{{b}}</label>
+                <label><input type='radio' class="c" name="question-{{id}}">{{c}}</label>
+                <label><input type='radio' class="d" name="question-{{id}}">{{d}}</label>
+            </div>`
+
+            data.forEach(function(item, index) {
+                let html = template
+                                .replace("{{content question}}", item.question)
+                                .replace("{{a}}", item.a)
+                                .replace("{{b}}", item.b)
+                                .replace("{{c}}", item.c)
+                                .replace("{{d}}", item.d)
+                                .replaceAll("{{id}}", index)
+                $("#wrapper").append(html);
+            })
+            }
+        })
+    </script>
+</body>
+</html>
