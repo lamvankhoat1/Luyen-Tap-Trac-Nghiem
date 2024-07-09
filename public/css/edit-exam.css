@@ -1,0 +1,13 @@
+h3 {
+    color: rgba(255, 0, 0, 0.699);
+}
+
+label {
+    display: block;
+    font-weight: bold;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+}

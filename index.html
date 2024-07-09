@@ -60,6 +60,8 @@
                 <label><input type='radio' class="b" name="question-{{id}}">{{b}}</label>
                 <label><input type='radio' class="c" name="question-{{id}}">{{c}}</label>
                 <label><input type='radio' class="d" name="question-{{id}}">{{d}}</label>
+                <div class="key">{{key}}</div>
+                <div class="explain">{{explain}}</div>
             </div>`
 
             data.forEach(function(item, index) {
@@ -70,6 +72,8 @@
                                 .replace("{{c}}", item.c)
                                 .replace("{{d}}", item.d)
                                 .replaceAll("{{id}}", index)
+                                .replaceAll("{{key}}", item.key)
+                                .replaceAll("{{explain}}", item.explain)
                 $("#wrapper").append(html);
             })
             }

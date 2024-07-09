@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa nội dung exam</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="public/css/reset.css">
+    <link rel="stylesheet" href="public/css/edit-exam.css">
+</head>
+<body>
+    <div id="wrapper">
+        <h1>Chỉnh sửa nội dung</h1>
+        <select name="" id="url-file">
+            <option value="" selected disabled>Chọn file</option>
+            <option value="phat-trien-ung-dung-web-voi-ma-nguon-mo/1-luyen-tap-1.tsv">phat-trien-ung-dung-web-voi-ma-nguon-mo/1-luyen-tap-1.tsv</option>
+        </select>
+        <textarea id="result"></textarea>
+        <div id="edit-exam"></div>
+    </div>
+    <script>
+        $(document).ready(function(){
+          $("#url-file").change(function(){
+            let path = $(this).val();
+            fetch(path)
+                .then(function(response) {
+                    return response.text()
+                })
+                .then(function(string_result) {
+                    $("#result").val(string_result);
+                    render_list_questions(string_result);
+                    return string_result
+                })
+          })
+        })
+
+        function render_list_questions(string_result) {
+            let array_result = string_result.split("\n");
+            array_result = array_result.filter(item => item !="");
+            array_exam = array_result.map(function(item) {
+                let components = item.split("\t");
+                let object_item = {};
+                object_item['question'] = components[0];
+                object_item['a'] = components[1];
+                object_item['b'] = components[2];
+                object_item['c'] = components[3];
+                object_item['d'] = components[4];
+                object_item['key'] = components[5];
+                object_item['explain'] = components[6];
+                return object_item
+            })
+
+            let html_template = `
+                <div class="question">
+                    <h3>Câu {{index}}</h3>
+                    <label>Nội dung câu hỏi<textarea class="edit-field question" oninput="editField(this)">{{question}}</textarea></label>
+                    
+                    <label>Lựa chọn A<textarea class="edit-field a" oninput="editField(this)">{{a}}</textarea></label>
+                    
+                    <label>Lựa chọn B<textarea class="edit-field b" oninput="editField(this)">{{b}}</textarea></label>
+                    
+                    <label>Lựa chọn C<textarea class="edit-field c" oninput="editField(this)">{{c}}</textarea></label>
+                    
+                    <label>Lựa chọn D<textarea class="edit-field d" oninput="editField(this)">{{d}}</textarea></label>
+                    
+                    <label>ĐÁP ÁN<textarea class="edit-field key" oninput="editField(this)">{{key}}</textarea></label>
+                    <p style="background-color: yellow">{{key}}</p>
+                    <label>GIẢI THÍCH<textarea class="edit-field explain" oninput="editField(this)">{{explain}}</textarea></label>
+                    
+                </div>
+            `
+
+            array_exam.forEach(function(item, index){
+              let html = html_template
+                .replaceAll("{{index}}", index+1)
+                .replaceAll("{{question}}", fix_string(item.question))
+                .replaceAll("{{a}}", fix_string(item.a))
+                .replaceAll("{{b}}", fix_string(item.b))
+                .replaceAll("{{c}}", fix_string(item.c))
+                .replaceAll("{{d}}", fix_string(item.d))
+                .replaceAll("{{key}}", fix_string(item.key))
+                .replaceAll("{{explain}}", fix_string(item.explain))
+              $("#edit-exam").append(html);
+            })
+        }
+
+        function editField(element) {
+            console.log(element);
+            create_result();
+        }
+
+        function fix_string(string) {
+            return string.toString().replaceAll("&lt;", "&amp;lt;").replaceAll("&gt;", "&amp;gt;");
+        }
+
+        function create_result() {
+            let string_result = "";
+            $(".edit-field").each(function(key, elm){
+              let char_split = "\t";
+              if (elm.classList.contains("explain")) {
+                char_split = "\n"
+              }
+              string_result +=  elm.value + char_split;
+            })
+            $("#result").val(string_result);
+        }
+    </script>
+</body>
+</html>
