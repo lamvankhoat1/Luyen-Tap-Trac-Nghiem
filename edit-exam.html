@@ -15,7 +15,7 @@
             <option value="" selected disabled>Chọn file</option>
             <option value="phat-trien-ung-dung-web-voi-ma-nguon-mo/1-luyen-tap-1.tsv">phat-trien-ung-dung-web-voi-ma-nguon-mo/1-luyen-tap-1.tsv</option>
         </select>
-        <textarea id="result"></textarea>
+        <textarea id="result"></textarea><button onclick="copy_result()">Sao chép</button>
         <div id="edit-exam"></div>
     </div>
     <script>
@@ -103,6 +103,11 @@
               string_result +=  elm.value + char_split;
             })
             $("#result").val(string_result);
+        }
+
+        function copy_result() {
+            $("#result").select();
+            document.execCommand("copy");
         }
     </script>
 </body>

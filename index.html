@@ -48,23 +48,34 @@
                     }
                 }) 
     
+                list_questions.sort(function(a, b){
+                  return Math.random() - 0.5;
+                })
                 list_questions.forEach(function(item) {
                     data.push(item);
                 })
             }
+
             
             function render_exam(data) {
                 let template = `<div class="question">
                 <div class="content">{{content question}}</div>
-                <label><input type='radio' class="a" name="question-{{id}}">{{a}}</label>
-                <label><input type='radio' class="b" name="question-{{id}}">{{b}}</label>
-                <label><input type='radio' class="c" name="question-{{id}}">{{c}}</label>
-                <label><input type='radio' class="d" name="question-{{id}}">{{d}}</label>
-                <div class="key">{{key}}</div>
-                <div class="explain">{{explain}}</div>
+                <div class="choices-list">
+                    <label style="order: {{order}}"><input type='radio' class="a" name="question-{{id}}">{{a}}</label>
+                    <label style="order: {{order}}"><input type='radio' class="b" name="question-{{id}}">{{b}}</label>
+                    <label style="order: {{order}}"><input type='radio' class="c" name="question-{{id}}">{{c}}</label>
+                    <label style="order: {{order}}"><input type='radio' class="d" name="question-{{id}}">{{d}}</label>
+                </div>
+                <div class="key-explain" style="display: none">
+                    <div class="key">{{key}}</div>
+                    <div class="explain">{{explain}}</div>
+                    <button class="redo-this-question">Làm lại câu này</button>
+                </div>
             </div>`
 
             data.forEach(function(item, index) {
+                let order_list = [1,2,3,4];
+                order_list.sort((a, b) => Math.random() - 0.5);
                 let html = template
                                 .replace("{{content question}}", item.question)
                                 .replace("{{a}}", item.a)
@@ -74,10 +85,47 @@
                                 .replaceAll("{{id}}", index)
                                 .replaceAll("{{key}}", item.key)
                                 .replaceAll("{{explain}}", item.explain)
+                                .replace("{{order}}", order_list[0])
+                                .replace("{{order}}", order_list[1])
+                                .replace("{{order}}", order_list[2])
+                                .replace("{{order}}", order_list[3])
+
                 $("#wrapper").append(html);
+
+                // console.log($("#wrapper").children(".question").last().find(".a, .b, .c, .d"));
+                // add event for a, b, c, d
+                $("#wrapper").children(".question").last().find(".a, .b, .c, .d").change(function(){
+                    let parent_element = $(this).closest(".question");
+                    let keyExplain_element = parent_element.find(".key-explain");
+                    keyExplain_element.slideDown(100);
+                    keyExplain_element.get(0).scrollIntoView({
+                        behavior: "smooth"
+                    })
+                });
+                // add event for redo-this-question
+                $("#wrapper").children(".question").last().find(".redo-this-question").click(function(){
+                    let parent_element = $(this).closest(".question");
+                    parent_element.clone(true);
+                    parent_element.find("input").prop('checked', false); //uncheck
+                    parent_element.find(".key-explain").slideUp(100); //hide key and explain;
+                    //random a,b, c,d
+                    let order_list = [1,2,3,4];
+                    order_list.sort((a, b) => Math.random() - 0.5);
+                    console.log(order_list);
+                    let a = parent_element.find("label[style='order: 1']");
+                    let b = parent_element.find("label[style='order: 2']");
+                    let c = parent_element.find("label[style='order: 3']");
+                    let d = parent_element.find("label[style='order: 4']");
+                    a.attr("style", 'order: ' + order_list[0]);
+                    b.attr("style", 'order: ' + order_list[1]);
+                    c.attr("style", 'order: ' + order_list[2]);
+                    d.attr("style", 'order: ' + order_list[3]);
+                    $("#wrapper").append(parent_element);
+                })
             })
-            }
-        })
+        }})
+
+
     </script>
 </body>
 </html>

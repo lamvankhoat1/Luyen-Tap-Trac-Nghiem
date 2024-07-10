@@ -47,3 +47,20 @@ label input[type='radio'] {
 .explain {
     color: blue;
 }
+
+button.redo-this-question {
+    outline: none;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 0 auto;
+    display: block;
+    opacity: 0.8;
+    transition: all 100ms;
+}
+
+button.redo-this-question:hover {
+    background-color: unset;
+    opacity: 1;
+    color: black;
+}
