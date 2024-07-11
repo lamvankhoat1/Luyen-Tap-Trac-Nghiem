@@ -1,62 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luyện Thi Online | TVU</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="public/css/reset.css">
     <link rel="stylesheet" href="public/css/exam.css">
+    <link rel="stylesheet" href="public/css/scroll-to-top.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
+
     <div id="wrapper">
+        <div class="select-list">
+            <select name="" class="list-exam"><option value="" selected disabled>Chọn môn học</option></select>
+            <select name="" class="list-part"><option value='' selected disabled>Chọn nhiệm vụ</option></select>
+        </div>
+        <div id="wrapper-exam">
+        </div>
+        <div class="select-list">
+            <button class="redo-this-part">Làm lại phần này</button>
+            <button class="do-next-part">Làm tiếp</button>
+        </div>
+        
+        <button class="scroll-to-top" onclick="scrollToTop()" id="myBtn" title="Go to top"><i class="fa-solid fa-arrow-up"></i></button>
     </div>
     <script>
-        $(document).ready(function(){
-            let folder = "phat-trien-ung-dung-web-voi-ma-nguon-mo/";
-            let files = ['1-luyen-tap-1.tsv'];
-          
-            let data = [];
-            files.forEach(file => {
-                let path = folder + file;
-                fetch(path)
-                    .then(function(response) {
-                        return response.text();
-                    })
-                    .then(function(result) {
-                        create_exam(result);
-                        render_exam(data);
-                    })
-            });
-    
+        let data = [];
+        let list_data_exams = [
+            {
+                name: "Phát triển ứng dụng web với mã nguồn mở",
+                folder: "phat-trien-ung-dung-web-voi-ma-nguon-mo/",
+                parts: [
+                    {name: "Luyện tập trắc nghiệm 1", file: "luyen-tap-1.tsv"},
+                    {name: "Luyện tập trắc nghiệm 2", file: "luyen-tap-2.tsv"}
+                ]
+            }
+        ]
+
+        $(document).ready(function () {
+            $(".list-exam").html(`<option value="" selected disabled>Chọn môn học</option>`);
+            list_data_exams.forEach(function (exam) {
+                let template_html = `<option value="{{folder}}">{{name}}</option>`
+                let render_html = template_html.replace('{{folder}}', exam.folder).replace('{{name}}', exam.name);
+                $(".list-exam").append(render_html);
+            })
+
+            $("#wrapper").find(".list-exam").change(function () {
+                let folder = $(this).val();
+                let parts = list_data_exams.find(exam => exam.folder == folder).parts;
+                $(".list-part").html(`<option value='' selected disabled>Chọn nhiệm vụ</option>`)
+                let template_html = "<option value='{{path}}'>{{name}}</option>";
+                parts.forEach(function(part) {
+                    let render_html = template_html.replace("{{path}}", folder+part.file).replace("{{name}}", part.name);
+                    $(".list-part").append(render_html);
+                })
+
+                $(".list-part").change(function(){
+                    data = [];
+                    get_data($(this).val(), true);
+                })
+            })
+
+            async function get_data(path, excuse_render) {
+                let response = await fetch(path);
+                let text = await response.text();
+                await create_exam(text);
+                // @excuse_render: tránh thực thi nhiều lần gây trùng câu hỏi
+                if (excuse_render) {
+                    await render_exam(data);
+                } else {
+                    console.log("remove")
+                }
+            }
+
             function create_exam(text) {
                 let list_questions = text.split("\n");
-                // loại bỏ phần tử cuối nếu rỗng
-                if (list_questions[list_questions.length - 1].length == 0) {
-                    list_questions.pop();
-                }
-                list_questions = list_questions.map(function(item, index, array) {
-                    let components = item.split('\t')
+                list_questions = list_questions.filter(question => question !== "");
+                list_questions = list_questions.map(function (item, index, array) {
+                    let components = item.split('\t');
+                    let list_abcd = [components[1], components[2], components[3], components[4]];
+                    console.log(list_abcd);
+                    list_abcd.sort(); //sắp xếp thứ tự lựa chọn a, b,c, d để lọc đáp án
                     return {
                         'question': components[0],
-                        'a': components[1],
-                        'b': components[2],
-                        'c': components[3],
-                        'd': components[4],
+                        'a': list_abcd[0],
+                        'b': list_abcd[1],
+                        'c': list_abcd[2],
+                        'd': list_abcd[3],
                         'key': components[5],
                         'explain': components[6],
                     }
-                }) 
-    
-                list_questions.sort(function(a, b){
-                  return Math.random() - 0.5;
                 })
-                list_questions.forEach(function(item) {
-                    data.push(item);
+
+                list_questions.sort(function (a, b) {
+                    return Math.random() - 0.5;
+                })
+                list_questions.forEach(function (item) {
+                    // check duplicate to push
+                    let tmp_data = data.map(item => [item.question, item.a, item.b, item.c, item.d].join("---"));
+                    if (tmp_data.indexOf([item.question, item.a, item.b, item.c, item.d].join("---")) == -1) {
+                        data.push(item);
+                    } else {
+                        console.log(tmp_data.indexOf([item.question, item.a, item.b, item.c, item.d].join("---")));
+                    }
                 })
             }
 
-            
             function render_exam(data) {
                 let template = `<div class="question">
                 <div class="content">{{content question}}</div>
@@ -73,59 +128,63 @@
                 </div>
             </div>`
 
-            data.forEach(function(item, index) {
-                let order_list = [1,2,3,4];
-                order_list.sort((a, b) => Math.random() - 0.5);
-                let html = template
-                                .replace("{{content question}}", item.question)
-                                .replace("{{a}}", item.a)
-                                .replace("{{b}}", item.b)
-                                .replace("{{c}}", item.c)
-                                .replace("{{d}}", item.d)
-                                .replaceAll("{{id}}", index)
-                                .replaceAll("{{key}}", item.key)
-                                .replaceAll("{{explain}}", item.explain)
-                                .replace("{{order}}", order_list[0])
-                                .replace("{{order}}", order_list[1])
-                                .replace("{{order}}", order_list[2])
-                                .replace("{{order}}", order_list[3])
-
-                $("#wrapper").append(html);
-
-                // console.log($("#wrapper").children(".question").last().find(".a, .b, .c, .d"));
-                // add event for a, b, c, d
-                $("#wrapper").children(".question").last().find(".a, .b, .c, .d").change(function(){
-                    let parent_element = $(this).closest(".question");
-                    let keyExplain_element = parent_element.find(".key-explain");
-                    keyExplain_element.slideDown(100);
-                    keyExplain_element.get(0).scrollIntoView({
-                        behavior: "smooth"
-                    })
-                });
-                // add event for redo-this-question
-                $("#wrapper").children(".question").last().find(".redo-this-question").click(function(){
-                    let parent_element = $(this).closest(".question");
-                    parent_element.clone(true);
-                    parent_element.find("input").prop('checked', false); //uncheck
-                    parent_element.find(".key-explain").slideUp(100); //hide key and explain;
-                    //random a,b, c,d
-                    let order_list = [1,2,3,4];
+                $("#wrapper-exam").html(""); //reset
+                $("#wrapper-exam").append(`<p>${data.length} câu</p>`);
+                data.forEach(function (item, index) {
+                    let order_list = [1, 2, 3, 4];
                     order_list.sort((a, b) => Math.random() - 0.5);
-                    console.log(order_list);
-                    let a = parent_element.find("label[style='order: 1']");
-                    let b = parent_element.find("label[style='order: 2']");
-                    let c = parent_element.find("label[style='order: 3']");
-                    let d = parent_element.find("label[style='order: 4']");
-                    a.attr("style", 'order: ' + order_list[0]);
-                    b.attr("style", 'order: ' + order_list[1]);
-                    c.attr("style", 'order: ' + order_list[2]);
-                    d.attr("style", 'order: ' + order_list[3]);
-                    $("#wrapper").append(parent_element);
-                })
-            })
-        }})
+                    let html = template
+                        .replace("{{content question}}", item.question)
+                        .replace("{{a}}", item.a)
+                        .replace("{{b}}", item.b)
+                        .replace("{{c}}", item.c)
+                        .replace("{{d}}", item.d)
+                        .replaceAll("{{id}}", index)
+                        .replaceAll("{{key}}", item.key)
+                        .replaceAll("{{explain}}", item.explain)
+                        .replace("{{order}}", order_list[0])
+                        .replace("{{order}}", order_list[1])
+                        .replace("{{order}}", order_list[2])
+                        .replace("{{order}}", order_list[3])
 
+                    $("#wrapper-exam").append(html);
+
+                    // console.log($("#wrapper-exam").children(".question").last().find(".a, .b, .c, .d"));
+                    // add event for a, b, c, d
+                    $("#wrapper-exam").children(".question").last().find(".a, .b, .c, .d").change(function () {
+                        let parent_element = $(this).closest(".question");
+                        let keyExplain_element = parent_element.find(".key-explain");
+                        keyExplain_element.slideDown(100);
+                        keyExplain_element.get(0).scrollIntoView({
+                            behavior: "smooth"
+                        })
+                    });
+                    // add event for redo-this-question
+                    $("#wrapper-exam").children(".question").last().find(".redo-this-question").click(function () {
+                        let parent_element = $(this).closest(".question");
+                        parent_element.clone(true);
+                        parent_element.find("input").prop('checked', false); //uncheck
+                        parent_element.find(".key-explain").slideUp(100); //hide key and explain;
+                        //random a,b, c,d
+                        let order_list = [1, 2, 3, 4];
+                        order_list.sort((a, b) => Math.random() - 0.5);
+                        console.log(order_list);
+                        let a = parent_element.find("label[style='order: 1']");
+                        let b = parent_element.find("label[style='order: 2']");
+                        let c = parent_element.find("label[style='order: 3']");
+                        let d = parent_element.find("label[style='order: 4']");
+                        a.attr("style", 'order: ' + order_list[0]);
+                        b.attr("style", 'order: ' + order_list[1]);
+                        c.attr("style", 'order: ' + order_list[2]);
+                        d.attr("style", 'order: ' + order_list[3]);
+                        $("#wrapper-exam").append(parent_element);
+                    })
+                })
+            }
+        })
 
     </script>
+    <script src="public/js/scroll-to-top.js"></script>
 </body>
+
 </html>

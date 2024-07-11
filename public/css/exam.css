@@ -48,7 +48,7 @@ label input[type='radio'] {
     color: blue;
 }
 
-button.redo-this-question {
+button {
     outline: none;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -59,8 +59,17 @@ button.redo-this-question {
     transition: all 100ms;
 }
 
-button.redo-this-question:hover {
+button:hover {
     background-color: unset;
     opacity: 1;
     color: black;
+}
+
+button.redo-this-part, button.do-next-part, button.scroll-to-top {
+    margin: unset;
+    display: inline-block;
+}
+
+button.do-next-part {
+    float: right;
 }
