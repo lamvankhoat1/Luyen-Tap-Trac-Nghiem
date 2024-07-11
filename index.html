@@ -11,24 +11,31 @@
     <link rel="stylesheet" href="public/css/reset.css">
     <link rel="stylesheet" href="public/css/exam.css">
     <link rel="stylesheet" href="public/css/scroll-to-top.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
 
     <div id="wrapper">
         <div class="select-list">
-            <select name="" class="list-exam"><option value="" selected disabled>Chọn môn học</option></select>
-            <select name="" class="list-part"><option value='' selected disabled>Chọn nhiệm vụ</option></select>
+            <select name="" class="list-exam">
+                <option value="" selected disabled>Chọn môn học</option>
+            </select>
+            <select name="" class="list-part">
+                <option value='' selected disabled>Chọn nhiệm vụ</option>
+            </select>
         </div>
         <div id="wrapper-exam">
         </div>
         <div class="select-list">
-            <button class="redo-this-part">Làm lại phần này</button>
-            <button class="do-next-part">Làm tiếp</button>
+            <button class="redo-this-part" data-path="123">Làm lại phần này</button>
+            <button class="do-next-part" data-folder="" data-current-path="">Làm tiếp</button>
         </div>
-        
-        <button class="scroll-to-top" onclick="scrollToTop()" id="myBtn" title="Go to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+        <button class="scroll-to-top" onclick="scrollToTop()" id="myBtn" title="Go to top"><i
+                class="fa-solid fa-arrow-up"></i></button>
     </div>
     <script>
         let data = [];
@@ -37,8 +44,8 @@
                 name: "Phát triển ứng dụng web với mã nguồn mở",
                 folder: "phat-trien-ung-dung-web-voi-ma-nguon-mo/",
                 parts: [
-                    {name: "Luyện tập trắc nghiệm 1", file: "luyen-tap-1.tsv"},
-                    {name: "Luyện tập trắc nghiệm 2", file: "luyen-tap-2.tsv"}
+                    { name: "Luyện tập trắc nghiệm 1", file: "luyen-tap-1.tsv" },
+                    { name: "Luyện tập trắc nghiệm 2", file: "luyen-tap-2.tsv" }
                 ]
             }
         ]
@@ -56,13 +63,14 @@
                 let parts = list_data_exams.find(exam => exam.folder == folder).parts;
                 $(".list-part").html(`<option value='' selected disabled>Chọn nhiệm vụ</option>`)
                 let template_html = "<option value='{{path}}'>{{name}}</option>";
-                parts.forEach(function(part) {
-                    let render_html = template_html.replace("{{path}}", folder+part.file).replace("{{name}}", part.name);
+                parts.forEach(function (part) {
+                    let render_html = template_html.replace("{{path}}", folder + part.file).replace("{{name}}", part.name);
                     $(".list-part").append(render_html);
                 })
 
-                $(".list-part").change(function(){
+                $(".list-part").change(function () {
                     data = [];
+                    $(".redo-this-part").data("path", $(this).val());
                     get_data($(this).val(), true);
                 })
             })
@@ -74,8 +82,6 @@
                 // @excuse_render: tránh thực thi nhiều lần gây trùng câu hỏi
                 if (excuse_render) {
                     await render_exam(data);
-                } else {
-                    console.log("remove")
                 }
             }
 
@@ -85,7 +91,6 @@
                 list_questions = list_questions.map(function (item, index, array) {
                     let components = item.split('\t');
                     let list_abcd = [components[1], components[2], components[3], components[4]];
-                    console.log(list_abcd);
                     list_abcd.sort(); //sắp xếp thứ tự lựa chọn a, b,c, d để lọc đáp án
                     return {
                         'question': components[0],
@@ -101,13 +106,12 @@
                 list_questions.sort(function (a, b) {
                     return Math.random() - 0.5;
                 })
+
                 list_questions.forEach(function (item) {
                     // check duplicate to push
                     let tmp_data = data.map(item => [item.question, item.a, item.b, item.c, item.d].join("---"));
                     if (tmp_data.indexOf([item.question, item.a, item.b, item.c, item.d].join("---")) == -1) {
                         data.push(item);
-                    } else {
-                        console.log(tmp_data.indexOf([item.question, item.a, item.b, item.c, item.d].join("---")));
                     }
                 })
             }
@@ -181,6 +185,16 @@
                     })
                 })
             }
+
+            // redo-this-part
+            $(".redo-this-part").click(function () {
+                // reset data
+                data = [];
+                get_data($(this).data('path'), true);
+                scrollToTop()
+            })
+
+            // do-next-part
         })
 
     </script>
