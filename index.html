@@ -44,8 +44,9 @@
                 name: "Phát triển ứng dụng web với mã nguồn mở",
                 folder: "phat-trien-ung-dung-web-voi-ma-nguon-mo/",
                 parts: [
-                    { name: "Luyện tập trắc nghiệm 1", file: "luyen-tap-1.tsv" },
-                    { name: "Luyện tập trắc nghiệm 2", file: "luyen-tap-2.tsv" }
+                    { name: "Luyện tập trắc nghiệm 1 (Xong)", file: "luyen-tap-1.tsv" },
+                    { name: "Luyện tập trắc nghiệm 2 + Giữa kỳ 1 (Xong)", file: "luyen-tap-2.tsv" },
+                    { name: "Luyện tập trắc nghiệm 3 (Đang làm)", file: "luyen-tap-3.tsv" },
                 ]
             }
         ]
@@ -126,9 +127,10 @@
                     <label style="order: {{order}}"><input type='radio' class="d" name="question-{{id}}">{{d}}</label>
                 </div>
                 <div class="key-explain" style="display: none">
-                    <div class="key">{{key}}</div>
+                    <!--<div class="key">{{key}}</div>-->
                     <div class="explain">{{explain}}</div>
                     <button class="redo-this-question">Làm lại câu này</button>
+                    <button class="next-question">Next</button>
                 </div>
             </div>`
 
@@ -153,7 +155,6 @@
 
                     $("#wrapper-exam").append(html);
 
-                    // console.log($("#wrapper-exam").children(".question").last().find(".a, .b, .c, .d"));
                     // add event for a, b, c, d
                     $("#wrapper-exam").children(".question").last().find(".a, .b, .c, .d").change(function () {
                         let parent_element = $(this).closest(".question");
@@ -182,6 +183,14 @@
                         c.attr("style", 'order: ' + order_list[2]);
                         d.attr("style", 'order: ' + order_list[3]);
                         $("#wrapper-exam").append(parent_element);
+                    })
+
+                    // add event button .next-question
+                    $("#wrapper-exam").children(".question").last().find("button.next-question").click(function(){
+                      let current_question = $(this).closest('.question');
+                      current_question.next(".question").get(0).scrollIntoView({
+                            'behavior': 'smooth'
+                        });
                     })
                 })
             }
