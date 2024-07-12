@@ -46,7 +46,8 @@
                 parts: [
                     { name: "Luyện tập trắc nghiệm 1 (Xong)", file: "luyen-tap-1.tsv" },
                     { name: "Luyện tập trắc nghiệm 2 + Giữa kỳ 1 (Xong)", file: "luyen-tap-2.tsv" },
-                    { name: "Luyện tập trắc nghiệm 3 (Đang làm)", file: "luyen-tap-3.tsv" },
+                    { name: "Luyện tập trắc nghiệm 3 + Giữa kỳ 2 (Xong)", file: "luyen-tap-3.tsv" },
+                    { name: "Luyện tập trắc nghiệm 4 (Xong)", file: "luyen-tap-4.tsv" }
                 ]
             }
         ]
@@ -185,13 +186,17 @@
                         $("#wrapper-exam").append(parent_element);
                     })
 
+                    scrollToNextQuestion();
                     // add event button .next-question
-                    $("#wrapper-exam").children(".question").last().find("button.next-question").click(function(){
-                      let current_question = $(this).closest('.question');
-                      current_question.next(".question").get(0).scrollIntoView({
-                            'behavior': 'smooth'
-                        });
-                    })
+                })
+            }
+            
+            function scrollToNextQuestion() {
+                $("#wrapper-exam").children(".question").last().find("button.next-question").click(function(){
+                  let current_question = $(this).closest('.question');
+                  current_question.next(".question").get(0).scrollIntoView({
+                        'behavior': 'smooth'
+                    });
                 })
             }
 
