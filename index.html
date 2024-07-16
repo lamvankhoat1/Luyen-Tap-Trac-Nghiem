@@ -73,7 +73,14 @@
                 $(".list-exam").append(render_html);
             })
 
+            $("#wrapper-exam").html("Môn học làm gần đây: <b>" + localStorage.getItem("exam_name").replace("(Xong)", "").trim() + "</b><hr>");
+            // event change exam
             $("#wrapper").find(".list-exam").change(function () {
+                $(this).find("option").removeAttr("selected");
+                $(this).find("option").filter("[value='"+$(this).val()+"']").attr("selected", "selected");
+                // save exam_name
+                localStorage.setItem("exam_name", $(this).find("option").filter('[selected]').text());
+
                 let folder = $(this).val();
                 let parts = list_data_exams.find(exam => exam.folder == folder).parts;
                 $(".list-part").html(`<option value='' selected disabled>Chọn nhiệm vụ</option>`)
@@ -89,6 +96,8 @@
                     get_data($(this).val(), true);
                 })
             })
+
+
 
             async function get_data(path, excuse_render) {
                 let response = await fetch(path);
@@ -148,7 +157,8 @@
                 </div>
             </div>`
 
-                $("#wrapper-exam").html(""); //reset
+                $("#wrapper-exam").html("Môn học làm gần đây: <b>" + localStorage.getItem("exam_name").replace("(Xong)", "").trim() + "</b><hr>"); //reset
+
                 $("#wrapper-exam").append(`<p>${data.length} câu</p>`);
                 data.forEach(function (item, index) {
                     let order_list = [1, 2, 3, 4];
