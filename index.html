@@ -39,6 +39,8 @@
     </div>
     <script>
         let data = [];
+        let current_exam_name = "";
+        current_exam_name = (localStorage.getItem("exam_name")) ? (localStorage.getItem("exam_name")) : current_exam_name;
         let list_data_exams = [
             {
                 name: "Phát triển ứng dụng web với mã nguồn mở (Xong)",
@@ -73,7 +75,7 @@
                 $(".list-exam").append(render_html);
             })
 
-            $("#wrapper-exam").html("Môn học làm gần đây: <b>" + localStorage.getItem("exam_name").replace("(Xong)", "").trim() + "</b><hr>");
+            $("#wrapper-exam").html("Môn học làm gần đây: <b>" + current_exam_name.replace("(Xong)", "").trim() + "</b><hr>");
             // event change exam
             $("#wrapper").find(".list-exam").change(function () {
                 $(this).find("option").removeAttr("selected");
